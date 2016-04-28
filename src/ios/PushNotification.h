@@ -40,6 +40,9 @@
 - (void)setApplicationIconBadgeNumber:(CDVInvokedUrlCommand *)command;
 - (void)cancelAllLocalNotifications:(CDVInvokedUrlCommand *)command;
 
+- (void)getPushHistory:(CDVInvokedUrlCommand *)command;
++ (void)pn_application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
+
 @end
 
 #ifdef DEBUG

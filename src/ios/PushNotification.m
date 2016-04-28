@@ -348,6 +348,35 @@
 	[self.pushManager postEvent:event withAttributes:attributes];
 }
 
+#define PUSHWOOSH_NOTIFICATION_HISTORY_KEY @"com.pushwoosh.notification.history"
+- (void)getPushHistory:(CDVInvokedUrlCommand *)command {
+    NSArray *notifications = [[NSUserDefaults standardUserDefaults] objectForKey:PUSHWOOSH_NOTIFICATION_HISTORY_KEY];
+
+    CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:notifications];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+#define PUSH_HISTORY_COUNT_MAX 30
++ (void)pn_application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    if (!userInfo || (userInfo.count == 0)) {
+        completionHandler(UIBackgroundFetchResultNoData);
+        return;
+    }
+
+    id notificationsObject = [[NSUserDefaults standardUserDefaults] objectForKey:PUSHWOOSH_NOTIFICATION_HISTORY_KEY];
+    NSMutableArray *notificationsMutable = notificationsObject ? ((NSArray *)notificationsObject).mutableCopy : [NSMutableArray new];
+    [notificationsMutable addObject:userInfo];
+
+    [[NSUserDefaults standardUserDefaults] setObject:((notificationsMutable.count > PUSH_HISTORY_COUNT_MAX)
+                                                      ? [notificationsMutable subarrayWithRange:NSMakeRange((notificationsMutable.count - PUSH_HISTORY_COUNT_MAX),
+                                                                                                            PUSH_HISTORY_COUNT_MAX)]
+                                                      : [NSArray arrayWithArray:notificationsMutable])
+                                              forKey:PUSHWOOSH_NOTIFICATION_HISTORY_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    completionHandler(UIBackgroundFetchResultNewData);
+}
+
 - (void)dealloc {
 	self.pushManager = nil;
 	self.startPushData = nil;
