@@ -198,7 +198,7 @@
 	  withNotification:(NSDictionary *)pushNotification
 			   onStart:(BOOL)onStart {
 	//reset badge counter
-	[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
+	//[[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
 
 	NSMutableDictionary *pn = [NSMutableDictionary dictionaryWithDictionary:pushNotification];
 
