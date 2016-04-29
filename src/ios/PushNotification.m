@@ -359,7 +359,6 @@
 #define PUSH_HISTORY_COUNT_MAX 30
 + (void)pn_application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     if (!userInfo || (userInfo.count == 0)) {
-        completionHandler(UIBackgroundFetchResultNoData);
         return;
     }
 
@@ -373,8 +372,6 @@
                                                       : [NSArray arrayWithArray:notificationsMutable])
                                               forKey:PUSHWOOSH_NOTIFICATION_HISTORY_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
-
-    completionHandler(UIBackgroundFetchResultNewData);
 }
 
 - (void)dealloc {
